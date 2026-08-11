@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
+import { useAuth } from '@/context/AuthContext'
+
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
   { icon: PieChart, label: 'Analytics', href: '/dashboard/analytics' },
@@ -14,6 +16,7 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { signOut } = useAuth()
 
   return (
     <aside className="sticky top-24 h-[calc(100vh-8rem)] w-64 bg-card rounded-2xl hidden md:flex flex-col p-6 border border-border overflow-y-auto">
@@ -43,7 +46,10 @@ export function Sidebar() {
           <Settings className="w-5 h-5" />
           <span className="text-sm">Settings</span>
         </Link>
-        <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-400/10 transition-all duration-200 text-left">
+        <button 
+          onClick={() => signOut()}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-400/10 transition-all duration-200 text-left"
+        >
           <LogOut className="w-5 h-5" />
           <span className="text-sm">Logout</span>
         </button>
