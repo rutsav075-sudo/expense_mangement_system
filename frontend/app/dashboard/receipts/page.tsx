@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Download, Filter, Search, Upload } from "lucide-react"
-import { getTransactionsServer } from "@/lib/api"
+import { getTransactionsServer } from "@/lib/api-server"
 
 export default async function ReceiptsPage() {
   const transactions = await getTransactionsServer();

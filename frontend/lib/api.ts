@@ -1,11 +1,9 @@
-import { createServerSupabaseClient } from '@/lib/supabase'
-
 // Use relative URLs for client-side fetches (works on both localhost and Vercel)
 const API_BASE_URL = '/api';
 
 export interface Transaction {
   id: string;
-  userId: string;
+  userId?: string; // Optional since the backend assigns it
   amount: number;
   currency: string;
   category: string;
@@ -17,26 +15,6 @@ export interface Transaction {
   lineItems?: { item: string; price: number }[] | null;
   isFlagged: boolean;
   flagReason?: string | null;
-}
-
-// Server-side function — called directly from Server Components (no HTTP needed)
-export async function getTransactionsServer(): Promise<Transaction[]> {
-  try {
-    const supabase = createServerSupabaseClient()
-    const { data, error } = await supabase
-      .from('transactions')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      console.error('Supabase error:', error)
-      return []
-    }
-    return (data || []) as Transaction[]
-  } catch (e) {
-    console.error('Failed to fetch transactions from Supabase:', e)
-    return []
-  }
 }
 
 // Client-side API functions (use relative URLs, hit Next.js API routes)

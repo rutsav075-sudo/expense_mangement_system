@@ -41,8 +41,13 @@ export function Header() {
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64Url = reader.result as string;
-        const { updateProfile } = await import('firebase/auth');
-        await updateProfile(user, { photoURL: base64Url });
+        const { createBrowserSupabaseClient } = await import('@/lib/supabase-browser');
+        const supabase = createBrowserSupabaseClient();
+        
+        await supabase.auth.updateUser({
+          data: { avatar_url: base64Url }
+        });
+        
         // Force refresh state by just waiting or window.location.reload
         window.location.reload();
       };
@@ -126,7 +131,7 @@ export function Header() {
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="w-10 h-10 rounded-full bg-card border-2 border-transparent overflow-hidden relative cursor-pointer ring-offset-background transition-all hover:border-primary/50 focus:outline-none focus:border-primary"
             >
-              <Image src={user?.photoURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} alt="User" fill className="object-cover" unoptimized />
+              <Image src={user?.user_metadata?.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} alt="User" fill className="object-cover" unoptimized />
             </button>
             <AnimatePresence>
               {isProfileOpen && (
@@ -139,10 +144,10 @@ export function Header() {
                 >
                   <div className="px-5 py-4 bg-background/50 border-b border-border flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/20 relative overflow-hidden flex-shrink-0 border border-primary/20">
-                      <Image src={user?.photoURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} alt="User" fill className="object-cover" unoptimized />
+                      <Image src={user?.user_metadata?.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} alt="User" fill className="object-cover" unoptimized />
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-sm font-semibold text-foreground leading-none">{user?.displayName || "User"}</p>
+                      <p className="text-sm font-semibold text-foreground leading-none">{user?.user_metadata?.full_name || "User"}</p>
                       <p className="text-xs text-muted-foreground mt-1 leading-none truncate max-w-[150px]">{user?.email}</p>
                     </div>
                   </div>

@@ -2,7 +2,7 @@ import { DashboardMetrics } from '@/components/dashboard-metrics'
 import { SpendingChart } from '@/components/spending-chart'
 import { RecentTransactions } from '@/components/recent-transactions'
 import { NewExpenseButton } from '@/components/new-expense-button'
-import { getTransactionsServer } from '@/lib/api'
+import { getTransactionsServer } from '@/lib/api-server'
 
 export default async function Home() {
   const transactions = await getTransactionsServer();

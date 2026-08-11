@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowUpRight, TrendingDown, TrendingUp } from "lucide-react"
-import { getTransactionsServer } from "@/lib/api"
+import { getTransactionsServer } from "@/lib/api-server"
 import { AnalyticsCharts } from "@/components/analytics-charts"
 
 export default async function AnalyticsPage() {

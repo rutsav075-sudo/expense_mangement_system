@@ -29,7 +29,6 @@ export function ExpenseModal({ isOpen, onClose }: ModalProps) {
     
     try {
       await api.createTransaction({
-        userId: "demo-user", // Since auth might be bypassed, use a default ID
         amount: parseFloat(amount),
         currency: "USD",
         category,
