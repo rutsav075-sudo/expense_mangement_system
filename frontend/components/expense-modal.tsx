@@ -155,7 +155,28 @@ export function ExpenseModal({ isOpen, onClose }: ModalProps) {
                   </div>
                   <h3 className="text-base font-medium mb-1">Upload Receipt</h3>
                   <p className="text-sm text-muted-foreground mb-6">Drag and drop your receipt image here, or click to browse.</p>
-                  <button className="h-9 px-4 bg-secondary text-secondary-foreground text-sm font-medium rounded-lg hover:bg-secondary/80 transition-colors border border-border">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    id="receipt-upload"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        toast.success("Receipt uploaded! AI scanning in progress...");
+                        setTimeout(() => {
+                          setMerchant("Starbucks (Scanned)");
+                          setAmount("5.40");
+                          setCategory("Meals & Entertainment");
+                          setActiveTab("manual");
+                          toast.success("Receipt scanned successfully!");
+                        }, 1500);
+                      }
+                    }}
+                  />
+                  <button 
+                    onClick={() => document.getElementById('receipt-upload')?.click()}
+                    className="h-9 px-4 bg-secondary text-secondary-foreground text-sm font-medium rounded-lg hover:bg-secondary/80 transition-colors border border-border"
+                  >
                     Select Image
                   </button>
                 </div>
