@@ -1,0 +1,7 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0.post1
+supabase==2.3.0
+pydantic[email]==2.5.2
+python-dotenv==1.0.0
+python-multipart==0.0.6
+adaption==0.1.0
