@@ -172,10 +172,9 @@ export default function SettingsPage() {
                   <p className="text-sm text-muted-foreground mt-1">Populate your workspace with dummy transactions and graphs so you can preview the system capabilities.</p>
                 </div>
                 <Button 
-                  variant="outline" 
                   onClick={handleSeedData}
                   disabled={isSeeding || isDeleting}
-                  className="ml-4 whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                  className="ml-4 whitespace-nowrap bg-emerald-600 text-white hover:bg-emerald-700 border-none shadow-md"
                 >
                   {isSeeding ? "Generating..." : "Generate Data"}
                 </Button>
