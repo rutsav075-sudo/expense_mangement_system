@@ -17,6 +17,7 @@ export default function SettingsPage() {
   const [anthropicKey, setAnthropicKey] = useState("")
   
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isSeeding, setIsSeeding] = useState(false)
   
   useEffect(() => {
     setGeminiKey(localStorage.getItem("gemini_api_key") || "")
@@ -28,21 +29,45 @@ export default function SettingsPage() {
     localStorage.setItem("gemini_api_key", geminiKey)
     localStorage.setItem("openai_api_key", openAIKey)
     localStorage.setItem("anthropic_api_key", anthropicKey)
-    toast.success("API Keys saved securely to your browser!")
+    toast.success("API Keys saved successfully", {
+      description: "Your keys are stored locally in your browser."
+    })
   }
 
   const handleDeleteAllData = async () => {
-    const confirm = window.confirm("Are you sure you want to delete all transactions? This cannot be undone.")
-    if (!confirm) return
+    if (!confirm("Are you absolutely sure you want to delete all your transactions? This cannot be undone.")) return;
     
-    setIsDeleting(true)
+    setIsDeleting(true);
     try {
-      await api.deleteAllTransactions()
-      toast.success("All data has been deleted successfully.")
-    } catch (e: any) {
-      toast.error(e.message || "Failed to delete data.")
+      await api.deleteAllTransactions();
+      toast.success("All data deleted successfully", {
+        description: "Your workspace is now completely empty."
+      });
+      // Optional: if there's a global context to refresh or you want to redirect
+    } catch (err: any) {
+      toast.error("Failed to delete data", {
+        description: err.message
+      });
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
+    }
+  }
+
+  const handleSeedData = async () => {
+    setIsSeeding(true);
+    try {
+      await api.seedTransactions();
+      toast.success("Showcase Data Generated", {
+        description: "Your workspace has been populated with sample transactions."
+      });
+      // Force a full page reload so that server components fetch the new data
+      window.location.reload();
+    } catch (err: any) {
+      toast.error("Failed to generate data", {
+        description: err.message
+      });
+    } finally {
+      setIsSeeding(false);
     }
   }
 
@@ -135,13 +160,28 @@ export default function SettingsPage() {
         </TabsContent>
 
         <TabsContent value="data" className="mt-6 space-y-6">
-          <Card className="bg-card/50 border-border/50 backdrop-blur-sm shadow-xl border-destructive/20">
+          <Card className="bg-card/50 border-border/50 backdrop-blur-sm shadow-xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-destructive"><Database className="w-5 h-5" /> Data Management</CardTitle>
-              <CardDescription>Manage your workspace data. Warning: these actions are destructive.</CardDescription>
+              <CardTitle className="flex items-center gap-2 text-primary"><Database className="w-5 h-5" /> Data Management</CardTitle>
+              <CardDescription>Manage your workspace data.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 border border-destructive/30 rounded-xl bg-destructive/5">
+              <div className="flex items-center justify-between p-4 border border-border/50 rounded-xl bg-background/30">
+                <div>
+                  <p className="font-medium text-foreground">Generate Showcase Data</p>
+                  <p className="text-sm text-muted-foreground mt-1">Populate your workspace with dummy transactions and graphs so you can preview the system capabilities.</p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={handleSeedData}
+                  disabled={isSeeding || isDeleting}
+                  className="ml-4 whitespace-nowrap bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                >
+                  {isSeeding ? "Generating..." : "Generate Data"}
+                </Button>
+              </div>
+
+              <div className="flex items-center justify-between p-4 border border-destructive/30 rounded-xl bg-destructive/5 mt-4">
                 <div>
                   <p className="font-medium text-foreground">Delete All Data</p>
                   <p className="text-sm text-muted-foreground mt-1">Permanently remove all transactions and receipts from your workspace. This allows you to start fresh without any dummy data.</p>
@@ -149,7 +189,7 @@ export default function SettingsPage() {
                 <Button 
                   variant="destructive" 
                   onClick={handleDeleteAllData}
-                  disabled={isDeleting}
+                  disabled={isDeleting || isSeeding}
                   className="ml-4 whitespace-nowrap"
                 >
                   {isDeleting ? "Deleting..." : "Delete All Data"}

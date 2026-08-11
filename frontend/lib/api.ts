@@ -82,5 +82,15 @@ export const api = {
       const err = await response.json().catch(() => ({}));
       throw new Error(err.error || `Failed to delete all transactions: ${response.statusText}`);
     }
+  },
+  
+  seedTransactions: async (): Promise<void> => {
+    const res = await fetch(`${API_BASE_URL}/transactions/seed`, {
+      method: 'POST',
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Failed to generate showcase data');
+    }
   }
 };

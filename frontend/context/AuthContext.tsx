@@ -47,8 +47,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       await supabase.auth.signOut();
-      if (router) {
-        router.push('/login');
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
       }
     } catch (error) {
       console.error("Error signing out", error);
