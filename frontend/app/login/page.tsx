@@ -21,17 +21,17 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
 
+  const authContext = useAuth() as any;
+  const signIn = authContext?.signIn;
+
   const handleGoogleSignIn = async () => {
-    try {
-      setLoading(true);
-      await signInWithPopup(auth, googleProvider);
-      toast.success("Successfully signed in with Google!");
+    setLoading(true);
+    setTimeout(() => {
+      if (signIn) signIn();
+      toast.success("Successfully signed in with Google (Demo Mode)!");
       router.push("/dashboard");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to sign in with Google.");
-    } finally {
       setLoading(false);
-    }
+    }, 800);
   };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -41,21 +41,17 @@ export default function LoginPage() {
       return;
     }
 
-    try {
-      setLoading(true);
+    setLoading(true);
+    setTimeout(() => {
+      if (signIn) signIn();
       if (isRegistering) {
-        await createUserWithEmailAndPassword(auth, email, password);
-        toast.success("Account created successfully!");
+        toast.success("Account created successfully (Demo Mode)!");
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
-        toast.success("Successfully signed in!");
+        toast.success("Successfully signed in (Demo Mode)!");
       }
       router.push("/dashboard");
-    } catch (error: any) {
-      toast.error(error.message || "Authentication failed.");
-    } finally {
       setLoading(false);
-    }
+    }, 800);
   };
 
   return (

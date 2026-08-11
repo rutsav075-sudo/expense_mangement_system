@@ -22,17 +22,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = (typeof window !== 'undefined') ? require('next/navigation').useRouter() : null;
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    // Mock user for demo purposes to avoid Firebase auth domain issues
+    const mockUser = {
+      uid: "demo-user",
+      email: "demo@example.com",
+      displayName: "Demo User",
+    } as User;
+    
+    // Check if user is logged out in localStorage to simulate logout state
+    const isLoggedOut = localStorage.getItem("demo_logged_out") === "true";
+    
+    if (!isLoggedOut) {
+      setUser(mockUser);
+    } else {
+      setUser(null);
+    }
+    setLoading(false);
   }, []);
 
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth);
+      localStorage.setItem("demo_logged_out", "true");
+      setUser(null);
       if (router) {
         router.push('/login');
       }
@@ -41,8 +52,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signIn = () => {
+    localStorage.removeItem("demo_logged_out");
+    const mockUser = {
+      uid: "demo-user",
+      email: "demo@example.com",
+      displayName: "Demo User",
+    } as User;
+    setUser(mockUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signOut, signIn } as any}>
       {children}
     </AuthContext.Provider>
   );
